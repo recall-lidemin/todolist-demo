@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
+import TodoItem from './todoItem'
 
 class TodoList extends Component {
   constructor(props) {
     super(props)
     this.state = {
       inputValue: '',
-      list: [2],
+      list: [],
     }
   }
   handleChange = (e) => {
@@ -41,9 +42,12 @@ class TodoList extends Component {
         </div>
         <ul>
           {this.state.list.map((i, index) => (
-            <li key={i} onClick={this.handleDelete.bind(this, index)}>
-              {i}
-            </li>
+            <TodoItem
+              key={i + index}
+              content={i}
+              index={index}
+              handleDelete={this.handleDelete}
+            />
           ))}
         </ul>
       </>
