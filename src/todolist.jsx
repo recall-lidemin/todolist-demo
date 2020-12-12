@@ -1,58 +1,58 @@
-import React, { Component } from 'react'
-import TodoItem from './todoItem'
+import React, { useState } from 'react'
+import { Button, Input, List } from 'antd'
+import store from './store'
+import {
+  getInputChangeAction,
+  addTodoItemAction,
+  delTodoItemAction,
+} from './store/actionCreators'
 
-class TodoList extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      inputValue: '',
-      list: [],
-    }
+const TodoList = () => {
+  const [state, setState] = useState(store.getState())
+  // input改变
+  const handleChange = (e) => {
+    const action = getInputChangeAction(e.target.value)
+    store.dispatch(action)
   }
-  handleChange = (e) => {
-    this.setState({
-      inputValue: e.target.value,
-    })
+  // add
+  const handleAdd = () => {
+    const action = addTodoItemAction()
+    store.dispatch(action)
   }
-  handleClick = () => {
-    this.setState({
-      list: [...this.state.list, this.state.inputValue],
-      inputValue: '',
-    })
+  // del
+  const handleDel = (index) => {
+    const action = delTodoItemAction(index)
+    store.dispatch(action)
   }
-  handleDelete = (index) => {
-    const newList = [...this.state.list]
-    newList.splice(index, 1)
-    this.setState({
-      list: newList,
-    })
+  const handleStoreChange = () => {
+    setState(store.getState())
   }
-
-  render() {
-    console.log(this.state.list)
-    return (
-      <>
-        <div>
-          <input
-            type="text"
-            value={this.state.inputValue}
-            onChange={this.handleChange}
-          />
-          <button onClick={this.handleClick}>提交</button>
-        </div>
-        <ul>
-          {this.state.list.map((i, index) => (
-            <TodoItem
-              key={i + index}
-              content={i}
-              index={index}
-              handleDelete={this.handleDelete}
-            />
-          ))}
-        </ul>
-      </>
-    )
-  }
+  // 监听Store改变，重新拉取Store中的最新数据
+  store.subscribe(handleStoreChange)
+  return (
+    <>
+      <div style={{ display: 'flex' }}>
+        <Input
+          style={{ width: 200 }}
+          value={state.inputValue}
+          onChange={handleChange}
+        />
+        <Button type="primary" onClick={handleAdd}>
+          提交
+        </Button>
+      </div>
+      <List
+        size="large"
+        bordered
+        dataSource={state.list}
+        renderItem={(item, index) => (
+          <List.Item key={item} onClick={() => handleDel(index)}>
+            {item}
+          </List.Item>
+        )}
+      />
+    </>
+  )
 }
 
 export default TodoList

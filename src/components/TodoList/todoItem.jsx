@@ -2,12 +2,18 @@ import React, { Component } from 'react'
 import PropsTypes from 'prop-types'
 
 class TodoItem extends Component {
+  componentWillReceiveProps() {
+    console.log('接受props-执行')
+  }
+  componentWillUnmount() {
+    console.log('组件卸载')
+  }
   render() {
     const { content, index, test, handleDelete } = this.props
-    return (
-      <li onClick={() => handleDelete(index)}>
-        {test}----{content}
-      </li>
+    return React.createElement(
+      'li',
+      { onClick: () => handleDelete(index) },
+      React.createElement('span', { id: test }, content)
     )
   }
 }
