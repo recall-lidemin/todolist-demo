@@ -19,11 +19,8 @@ const reducer = (state = defaultState, action) => {
     }
   }
   if (action.type === 'del_list') {
-    const newState = {
-      ...state,
-    }
+    const newState = JSON.parse(JSON.stringify(state))
     newState.list.splice(action.value, 1)
-    console.log(newState)
     return newState
   }
   return state
