@@ -5,6 +5,7 @@ import {
   addTodoItemAction,
   delTodoItemAction,
   initListAction,
+  getTodoList,
 } from './store/actionCreators'
 import TodoItemUi from './todoItemUI'
 import axios from 'axios'
@@ -29,16 +30,29 @@ const TodoList = () => {
   const handleStoreChange = () => {
     setState(store.getState())
   }
-  // 发送请求获取数据
+  // 使用redux-saga
   const getList = async () => {
-    const res = await axios.get('http://localhost:3000/list')
-    const action = initListAction(res.data)
+    const action = getTodoList()
     store.dispatch(action)
   }
+
+  // 不使用中间件
+  // const getList = async () => {
+  //   const res = await axios.get('http://localhost:3000/list')
+  //   const action = initListAction(res.data)
+  //   store.dispatch(action)
+  // }
+
+  // 使用redux-thunk
+  // const getList = async () => {
+  //   const action = getTodoList()
+  //   store.dispatch(action)
+  // }
 
   useEffect(() => {
     getList()
   }, [])
+
   // 监听Store改变，重新拉取Store中的最新数据
   store.subscribe(handleStoreChange)
   return (
