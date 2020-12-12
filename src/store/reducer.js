@@ -1,4 +1,9 @@
-import { CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DEL_TODO_ITEM } from './actionTypes'
+import {
+  INIT_LIST,
+  CHANGE_INPUT_VALUE,
+  ADD_TODO_ITEM,
+  DEL_TODO_ITEM,
+} from './actionTypes'
 const defaultState = {
   inputValue: '',
   list: [],
@@ -23,6 +28,13 @@ const reducer = (state = defaultState, action) => {
       ...state,
     }
     newState.list.splice(action.value, 1)
+    return newState
+  }
+  if (action.type === INIT_LIST) {
+    const newState = {
+      ...state,
+      list: action.value,
+    }
     return newState
   }
   return state

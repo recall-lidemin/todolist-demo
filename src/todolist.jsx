@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
-import { Button, Input, List } from 'antd'
+import React, { useEffect, useState } from 'react'
 import store from './store'
 import {
   getInputChangeAction,
   addTodoItemAction,
   delTodoItemAction,
+  initListAction,
 } from './store/actionCreators'
+import TodoItemUi from './todoItemUI'
+import axios from 'axios'
 
 const TodoList = () => {
   const [state, setState] = useState(store.getState())
@@ -27,31 +29,25 @@ const TodoList = () => {
   const handleStoreChange = () => {
     setState(store.getState())
   }
+  // 发送请求获取数据
+  const getList = async () => {
+    const res = await axios.get('http://localhost:3000/list')
+    const action = initListAction(res.data)
+    store.dispatch(action)
+  }
+
+  useEffect(() => {
+    getList()
+  }, [])
   // 监听Store改变，重新拉取Store中的最新数据
   store.subscribe(handleStoreChange)
   return (
-    <>
-      <div style={{ display: 'flex' }}>
-        <Input
-          style={{ width: 200 }}
-          value={state.inputValue}
-          onChange={handleChange}
-        />
-        <Button type="primary" onClick={handleAdd}>
-          提交
-        </Button>
-      </div>
-      <List
-        size="large"
-        bordered
-        dataSource={state.list}
-        renderItem={(item, index) => (
-          <List.Item key={item} onClick={() => handleDel(index)}>
-            {item}
-          </List.Item>
-        )}
-      />
-    </>
+    <TodoItemUi
+      handleAdd={handleAdd}
+      handleDel={handleDel}
+      handleChange={handleChange}
+      state={state}
+    />
   )
 }
 
